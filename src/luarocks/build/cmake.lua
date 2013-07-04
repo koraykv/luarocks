@@ -43,14 +43,10 @@ function run(rockspec)
       args = args .. ' -D' ..k.. '="' ..v.. '"'
    end
 
-   local cdir = fs.current_dir()
    if not fs.make_dir('build') then
       return nil, "Failed creating build directory"
    end
-
-   if not fs.change_dir('build') then
-      return nil, "Failed going into build dir"
-   end
+   fs.change_dir('build')
 
    if not fs.execute_string(rockspec.variables.CMAKE.." .. " ..args) then
       return nil, "Failed cmake."
@@ -64,9 +60,7 @@ function run(rockspec)
       return nil, "Failed installing."
    end
 
-   if not fs.change_dir(cdir) then
-      return nil, "Failed going into build dir"
-   end
+   fs.pop_dir()
 
    return true
 end
